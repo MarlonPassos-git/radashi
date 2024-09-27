@@ -28,7 +28,7 @@
 	"files": ["dist"],
 	"scripts": {
 		"add-function": "bash ./scripts/add-function.sh",
-		"bench": "vitest bench",
+		"bench": "bash ./scripts/run-bench.sh",
 		"build": "tsup --clean",
 		"bundle-impact": "bash ./scripts/bundle-impact.sh",
 		"dev": "tsup --clean --watch --sourcemap",
