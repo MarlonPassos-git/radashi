@@ -28,7 +28,7 @@
 	"files": ["dist"],
 	"scripts": {
 		"add-function": "bash ./scripts/add-function.sh",
-		"bench": "bash ./scripts/run-bench.sh",
+		"bench": "vitest bench",
 		"build": "tsup --clean",
 		"bundle-impact": "bash ./scripts/bundle-impact.sh",
 		"dev": "tsup --clean --watch --sourcemap",
@@ -45,6 +45,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "^1.8.3",
 		"@radashi-org/biome-config": "link:scripts/biome-config",
+		"@types/node": "^22.7.5",
 		"@vitest/coverage-v8": "2.0.5",
 		"cspell": "^8.13.3",
 		"prettier": "^3.3.2",
