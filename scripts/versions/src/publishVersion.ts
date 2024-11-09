@@ -7,7 +7,6 @@ import os from 'node:os'
 import path from 'node:path'
 import { sift } from 'radashi/array/sift.js'
 import { dedent } from './dedent'
-import { trackVersion } from './trackVersion'
 
 // This is the commit that Radashi's changelog is based on.
 const changelogBaseSha = '2be4acf455ebec86e846854dbab57bd0bfbbceb7'
@@ -191,13 +190,6 @@ export async function publishVersion(args: {
 
   const { stdout: currentSha } = await execa('git', ['rev-parse', 'HEAD'])
   log(`Current SHA is ${currentSha}`)
-
-  // Track Version in Database
-  if (args.push) {
-    await trackVersion(newVersion, currentSha, log)
-  } else {
-    log('Would have tracked version in database, but --no-push was set')
-  }
 
   log('Setting package.json version')
   await execa('npm', ['version', newVersion, '--no-git-tag-version'], {
