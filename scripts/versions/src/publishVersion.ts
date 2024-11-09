@@ -22,6 +22,7 @@ export async function publishVersion(args: {
   push: boolean
   gitCliffToken?: string
   npmToken?: string
+  jsrToken?: string
   radashiBotToken: string
   deployKey?: string
   nightlyDeployKey?: string
@@ -239,9 +240,20 @@ export async function publishVersion(args: {
   await fs.writeFile('deno.json', JSON.stringify(denoJson, null, 2))
 
   log('Publishing to JSR.io')
-  await execa('pnpm', ['dlx', 'jsr', 'publish', '--allow-dirty'], {
-    stdio: 'inherit',
-  }).catch(error => {
+  await execa(
+    'pnpm',
+    [
+      'dlx',
+      'jsr',
+      'publish',
+      '--allow-dirty',
+      '--allow-slow-types',
+      `--token=${args.jsrToken}`,
+    ],
+    {
+      stdio: 'inherit',
+    },
+  ).catch(error => {
     // Don't exit early if JSR publish fails
     console.error('Failed to publish to JSR:', error)
   })
