@@ -41,6 +41,8 @@ export async function publishVersion(args: {
   )
 
   const newMajorVersion = newVersion.split('.')[0] // v12.2.0
+  log(`New major version: ${newMajorVersion}`)
+  log(`lastMajorVersion: ${stableVersion.split('.')[0]}`)
 
   if (args.tag) {
     const lastMajorVersion = stableVersion.split('.')[0]
