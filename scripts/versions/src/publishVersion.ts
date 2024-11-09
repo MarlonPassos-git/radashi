@@ -1,4 +1,3 @@
-import { Octokit } from '@octokit/rest'
 import { execa } from 'execa'
 import glob from 'fast-glob'
 import { green } from 'kleur/colors'
@@ -21,10 +20,11 @@ export async function publishVersion(args: {
   tag?: 'beta' | 'next'
   push: boolean
   gitCliffToken?: string
-  npmToken?: string
-  radashiBotToken: string
+  // npmToken?: string
+  // radashiBotToken: string
   deployKey?: string
   nightlyDeployKey?: string
+  rjsToken?: string
 }) {
   // Determine the last stable version
   const { stdout: stableVersion } = await execa('npm', [
@@ -33,7 +33,7 @@ export async function publishVersion(args: {
     'version',
   ])
 
-  log(`Last stable version: ${stableVersion}`)
+  log(`Last stable version: ${stableVersion}`) // 12.2.0
 
   const gitCliffBin = './scripts/versions/node_modules/.bin/git-cliff'
 
@@ -42,7 +42,7 @@ export async function publishVersion(args: {
     env: { GITHUB_TOKEN: args.gitCliffToken },
   }).then(r => r.stdout.replace(/^v/, ''))
 
-  const newMajorVersion = newVersion.split('.')[0]
+  const newMajorVersion = newVersion.split('.')[0] // v12.2.0
 
   if (args.tag) {
     const lastMajorVersion = stableVersion.split('.')[0]
@@ -215,22 +215,6 @@ export async function publishVersion(args: {
     npmPublishArgs.push('--dry-run')
   }
 
-  log('Publishing to NPM' + (args.push ? '' : ' (dry run)'))
-  await execa('npm', npmPublishArgs, {
-    env: { NODE_AUTH_TOKEN: args.npmToken },
-    stdio: 'inherit',
-  })
-
-  const octokit = new Octokit({ auth: args.radashiBotToken })
-
-  log('Dispatching publish-docs workflow')
-  await octokit.actions.createWorkflowDispatch({
-    owner: 'radashi-org',
-    repo: 'radashi',
-    workflow_id: 'publish-docs.yml',
-    ref: 'refs/tags/' + (preReleaseTag ?? exactTag),
-  })
-
   log('Updating version in deno.json')
   const denoJson = {
     ...JSON.parse(await fs.readFile('deno.json', 'utf8')),
@@ -239,9 +223,13 @@ export async function publishVersion(args: {
   await fs.writeFile('deno.json', JSON.stringify(denoJson, null, 2))
 
   log('Publishing to JSR.io')
-  await execa('pnpm', ['dlx', 'jsr', 'publish', '--allow-dirty'], {
-    stdio: 'inherit',
-  }).catch(error => {
+  await execa(
+    'pnpm',
+    ['dlx', 'jsr', 'publish', '--allow-dirty', `--token=${args.rjsToken}`],
+    {
+      stdio: 'inherit',
+    },
+  ).catch(error => {
     // Don't exit early if JSR publish fails
     console.error('Failed to publish to JSR:', error)
   })
@@ -281,38 +269,6 @@ export async function publishVersion(args: {
           <img src="https://github.com/radashi-org/radashi/raw/main/.github/img/changes-button.png" alt="See the changes" width="250px" />
         </a>
       `
-
-      // Find and delete existing comment by radashi-bot
-      const existingComments = await octokit.issues.listComments({
-        owner: 'radashi-org',
-        repo: 'radashi',
-        issue_number: +prNumber,
-        per_page: 100,
-      })
-
-      const botComment = existingComments.data.find(
-        comment =>
-          comment.user &&
-          (comment.user.login === 'radashi-bot' ||
-            comment.user.login === 'github-actions[bot]') &&
-          comment.body?.includes('published to NPM'),
-      )
-
-      if (botComment) {
-        await octokit.issues.deleteComment({
-          owner: 'radashi-org',
-          repo: 'radashi',
-          comment_id: botComment.id,
-        })
-      }
-
-      // Create new comment
-      await octokit.issues.createComment({
-        owner: 'radashi-org',
-        repo: 'radashi',
-        issue_number: +prNumber,
-        body,
-      })
     }
   }
 }
