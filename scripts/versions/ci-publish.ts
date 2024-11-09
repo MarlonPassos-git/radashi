@@ -10,14 +10,14 @@ async function main() {
 
 function parseArgs() {
   const {
-    gitCliffToken,
+    // gitCliffToken,
     // npmToken,
     // radashiBotToken,
     rjsToken,
     deployKey,
     nightlyDeployKey,
   } = verifyEnvVars({
-    gitCliffToken: !!process.env.CI && 'GIT_CLIFF_PAT',
+    // gitCliffToken: !!process.env.CI && 'GIT_CLIFF_PAT',
     npmToken: !!process.env.CI && 'NPM_TOKEN',
     // radashiBotToken: 'RADASHI_BOT_TOKEN',
     deployKey: 'DEPLOY_KEY',
@@ -38,7 +38,7 @@ function parseArgs() {
   return {
     push: !argv['no-push'],
     tag: argv.tag as 'beta' | 'next',
-    gitCliffToken,
+    // gitCliffToken,
     deployKey,
     nightlyDeployKey,
     rjsToken,

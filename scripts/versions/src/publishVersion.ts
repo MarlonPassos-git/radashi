@@ -18,7 +18,6 @@ export async function publishVersion(args: {
    */
   tag?: 'beta' | 'next'
   push: boolean
-  gitCliffToken?: string
   // npmToken?: string
   // radashiBotToken: string
   deployKey?: string
@@ -37,9 +36,9 @@ export async function publishVersion(args: {
   const gitCliffBin = './scripts/versions/node_modules/.bin/git-cliff'
 
   // Determine the next version
-  let newVersion = await execa(gitCliffBin, ['--bumped-version'], {
-    env: { GITHUB_TOKEN: args.gitCliffToken },
-  }).then(r => r.stdout.replace(/^v/, ''))
+  let newVersion = await execa(gitCliffBin, ['--bumped-version'], {}).then(r =>
+    r.stdout.replace(/^v/, ''),
+  )
 
   const newMajorVersion = newVersion.split('.')[0] // v12.2.0
 
@@ -101,16 +100,6 @@ export async function publishVersion(args: {
       process.exit(1)
     }
   }
-
-  // Generate Changelog
-  log(`Generating changelog from ${changelogBaseSha.slice(0, 7)} to HEAD`)
-  const gitCliffArgs = [`${changelogBaseSha}..HEAD`, '-o', 'CHANGELOG.md']
-  if (!args.tag) {
-    gitCliffArgs.push('--tag', `v${newVersion}`)
-  }
-  await execa(gitCliffBin, gitCliffArgs, {
-    env: { GITHUB_TOKEN: args.gitCliffToken },
-  })
 
   // Check if CHANGELOG.md has changed
   await execa('git', ['status', '--porcelain', 'CHANGELOG.md']).then(status => {
