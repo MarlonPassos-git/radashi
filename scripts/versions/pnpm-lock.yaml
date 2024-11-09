@@ -32,9 +32,6 @@ importers:
       radashi:
         specifier: link:../../src
         version: link:../../src
-      radashi-db:
-        specifier: link:../radashi-db
-        version: link:../radashi-db
       tsx:
         specifier: ^4.17.0
         version: 4.17.0
