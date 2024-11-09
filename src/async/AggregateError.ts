@@ -9,6 +9,7 @@
  * When it's not globally defined, Radashi provides a polyfill.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AggregateError
+ * @version 12.2.0
  */
 const AggregateErrorOrPolyfill: AggregateErrorConstructor =
   /* @__PURE__ */ (() =>
@@ -21,7 +22,7 @@ const AggregateErrorOrPolyfill: AggregateErrorConstructor =
         const name = errors.find(e => e.name)?.name ?? ''
         this.name = `AggregateError(${name}...)`
         this.message = `AggregateError with ${errors.length} errors`
-        this.stack = errors.find(e => e.stack)?.stack ?? this.stack
+        this.stack = errors.find(e => e.stack)?.stack ?? this.stack!
         this.errors = errors
       }
     } as unknown as AggregateErrorConstructor))()
