@@ -18,7 +18,7 @@ function parseArgs() {
     nightlyDeployKey,
   } = verifyEnvVars({
     // gitCliffToken: !!process.env.CI && 'GIT_CLIFF_PAT',
-    npmToken: !!process.env.CI && 'NPM_TOKEN',
+    // npmToken: !!process.env.CI && 'NPM_TOKEN',
     // radashiBotToken: 'RADASHI_BOT_TOKEN',
     deployKey: 'DEPLOY_KEY',
     nightlyDeployKey: 'NIGHTLY_DEPLOY_KEY',
