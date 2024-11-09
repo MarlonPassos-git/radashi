@@ -14,14 +14,14 @@ function parseArgs() {
     // npmToken,
     // radashiBotToken,
     rjsToken,
-    deployKey,
-    nightlyDeployKey,
+    // deployKey,
+    // nightlyDeployKey,
   } = verifyEnvVars({
     // gitCliffToken: !!process.env.CI && 'GIT_CLIFF_PAT',
     // npmToken: !!process.env.CI && 'NPM_TOKEN',
     // radashiBotToken: 'RADASHI_BOT_TOKEN',
-    deployKey: 'DEPLOY_KEY',
-    nightlyDeployKey: 'NIGHTLY_DEPLOY_KEY',
+    // deployKey: 'DEPLOY_KEY',
+    // nightlyDeployKey: 'NIGHTLY_DEPLOY_KEY',
     rjsToken: !!process.env.RJS_TOKEN && 'RJS_TOKEN',
   })
 
@@ -39,8 +39,8 @@ function parseArgs() {
     push: !argv['no-push'],
     tag: argv.tag as 'beta' | 'next',
     // gitCliffToken,
-    deployKey,
-    nightlyDeployKey,
+    deployKey: 'DEPLOY_KEY',
+    nightlyDeployKey: 'NIGHTLY_DEPLOY_KEY',
     rjsToken,
   }
 }
