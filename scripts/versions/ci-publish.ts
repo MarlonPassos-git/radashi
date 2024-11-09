@@ -30,13 +30,17 @@ function parseArgs() {
     string: ['tag'],
   })
 
+  console.log({
+    argv,
+  })
+
   if (argv.tag && argv.tag !== 'beta' && argv.tag !== 'next') {
     console.error('Error: --tag must be beta or next')
     process.exit(1)
   }
 
   return {
-    push: !argv['no-push'],
+    push: false,
     tag: argv.tag as 'beta' | 'next',
     // gitCliffToken,
     deployKey: 'DEPLOY_KEY',

@@ -104,25 +104,25 @@ export async function publishVersion(args: {
   }
 
   // Check if CHANGELOG.md has changed
-  await execa('git', ['status', '--porcelain', 'CHANGELOG.md']).then(status => {
-    if (!status.stdout.trim()) {
-      log('No changes detected in CHANGELOG.md')
-      process.exit(1)
-    }
-  })
+  // await execa('git', ['status', '--porcelain', 'CHANGELOG.md']).then(status => {
+  //   if (!status.stdout.trim()) {
+  //     log('No changes detected in CHANGELOG.md')
+  //     process.exit(1)
+  //   }
+  // })
 
-  // Commit files
-  const committedFiles = ['CHANGELOG.md']
-  if (!args.tag) {
-    // Only commit the changed version in package.json if it's a
-    // stable version being published.
-    committedFiles.push('package.json')
-  }
-  log('Committing:', committedFiles)
-  await execa('git', ['add', ...committedFiles])
-  await execa('git', ['commit', '-m', `chore(release): ${newVersion}`], {
-    stdio: 'inherit',
-  })
+  // // Commit files
+  // const committedFiles = ['CHANGELOG.md']
+  // if (!args.tag) {
+  //   // Only commit the changed version in package.json if it's a
+  //   // stable version being published.
+  //   committedFiles.push('package.json')
+  // }
+  // log('Committing:', committedFiles)
+  // await execa('git', ['add', ...committedFiles])
+  // await execa('git', ['commit', '-m', `chore(release): ${newVersion}`], {
+  //   stdio: 'inherit',
+  // })
 
   // Push to origin
   if (args.push) {
@@ -208,7 +208,14 @@ export async function publishVersion(args: {
   log('Publishing to JSR.io')
   await execa(
     'pnpm',
-    ['dlx', 'jsr', 'publish', '--allow-dirty', `--token=${args.rjsToken}`],
+    [
+      'dlx',
+      'jsr',
+      'publish',
+      '--allow-dirty',
+      `--token=${args.rjsToken}`,
+      '--allow-slow-types',
+    ],
     {
       stdio: 'inherit',
     },
