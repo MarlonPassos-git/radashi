@@ -8,6 +8,7 @@
  * isNumber('0') // => false
  * isNumber(NaN) // => true
  * ```
+ * @version 12.1.0
  */
 export function isNumber(value: unknown): value is number {
   return typeof value === 'number'
